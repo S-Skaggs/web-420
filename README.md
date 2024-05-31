@@ -1,2 +1,4 @@
-# web-420
-Repository for my web-420 class
+# WEB 420 RESTful APIs
+## Contributors
+* Professor Richard Krasso 
+* Sheldon Skaggs
