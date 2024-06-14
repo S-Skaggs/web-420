@@ -2,9 +2,8 @@
 .vscode
 .idea
 
-# Node dependency directories
+# Node ddependency directories
 node_modules/
-*/node_modules
 
 # Optional npm cache directory
 .npm
@@ -12,5 +11,5 @@ node_modules/
 # Optional eslint cache
 .eslintcache
 
-# macOS files
+# macOS
 .DS_Store

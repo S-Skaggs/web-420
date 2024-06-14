@@ -1,0 +1,18 @@
+{
+  "name": "simple-express-server",
+  "version": "1.0.0",
+  "description": "Following example in the book.",
+  "main": "index.js",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "nodemon app.js"
+  },
+  "author": "Sheldon Skaggs",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.19.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.3"
+  }
+}
