@@ -1,6 +1,6 @@
 /*
   Developer Name:   Sheldon Skaggs
-  Date:             6/14/2024
+  Date:             6/21/2024
   File Name:        app.js
   Description:      Express application for the in-n-out-books site
 */
@@ -12,6 +12,7 @@ const createError = require("http-errors");
 
 // Create an Express application in a variable
 const app = express(); // Creates an Express application
+const books = require("../database/books"); // require books mock database
 
 // Tell Express to parse incoming requests as JSON payloads
 app.use(express.json());
@@ -61,6 +62,50 @@ app.get('/', async (req, res, next) => {
   `; //End content for the landing page
 
   res.send(html); // Sends the HTML content to the client
+});
+
+// Route to get a list of all books
+app.get("/api/books", async (req, res, next) => {
+  try {
+    // Get an array of all books
+    const allBooks = await books.find();
+
+    // Send the array in the response
+    res.send(allBooks);
+  } catch (err) {
+    // Log any error message
+    console.error("Error: ", err.message);
+
+    // Pass error to the next middleware
+    next(err);
+  }
+});
+
+// Route to get a single book by id
+app.get("/api/books/:id", async (req, res, next) => {
+  try {
+    // Create a variable to hold the id parameter
+    let { id} = req.params;
+    id = parseInt(id);
+
+    // Check that the id is a number
+    if(isNaN(id)) {
+      // Return a 400 error, id should be a number
+      return next(createError(400, "Input must be a number"));
+    }
+
+    // Get a book using the id parameter
+    const book = await books.findOne({ id: id });
+
+    // Send the book in the response
+    res.send(book);
+  } catch (err) {
+    // Log any error message
+    console.error("Error: ", err.message);
+
+    // Pass error to the next middleware
+    next(err);
+  }
 });
 
 // catch 404 and forward to error handler
