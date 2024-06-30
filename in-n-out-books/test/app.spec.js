@@ -1,6 +1,6 @@
 /*
   Developer Name:   Sheldon Skaggs
-  Date:             6/21/2024
+  Date:             6/29/2024
   File Name:        app.spec.js
   Description:      Test file for the in-n-out-books site
 */
@@ -41,5 +41,40 @@ describe("Chapter 3: API Tests", () => {
 
     expect(res.statusCode).toEqual(400);
     expect(res.body.message).toEqual("Input must be a number");
+  });
+});
+
+// Test suite for Chapter 4: API Tests
+describe("Chapter 4: API Tests", () => {
+  // Test to return a 201 status code when inserting a new book
+  it("should return a 201 status code when adding a new book", async () => {
+    // Send a request and await the response
+    const res = await request(app).post("/api/books").send({
+      id: 100,
+      title: "This Doesn't Happen in the Movies",
+      author: "Renee Pawlish"
+    });
+
+    expect(res.statusCode).toEqual(201);
+  });
+
+  // Test to return 400 when trying to add a new book with a missing title
+  it("should return a 400 status code when adding a new book with missing title", async () => {
+    // Send a request and await the response
+    const res = await request(app).post("/api/books/").send({
+      id: 101,
+      author: "Renee Pawlish"
+    });
+
+    expect(res.statusCode).toEqual(400);
+    expect(res.body.message).toEqual("Bad Request");
+  });
+
+  // Test to return a 204 status code when deleting a book
+  it("should return a 204 status code when deleting a book", async () => {
+    // Send a request and await the response
+    const res = await request(app).delete("/api/books/100");
+
+    expect(res.statusCode).toEqual(204);
   });
 });

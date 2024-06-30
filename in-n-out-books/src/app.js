@@ -1,6 +1,6 @@
 /*
   Developer Name:   Sheldon Skaggs
-  Date:             6/21/2024
+  Date:             6/29/2024
   File Name:        app.js
   Description:      Express application for the in-n-out-books site
 */
@@ -104,6 +104,57 @@ app.get("/api/books/:id", async (req, res, next) => {
     console.error("Error: ", err.message);
 
     // Pass error to the next middleware
+    next(err);
+  }
+});
+
+// Post a new book
+app.post("/api/books", async (req, res, next) => {
+  try {
+    // Assign request body, which should be a new book, to a variable
+    const newBook = req.body;
+
+    // Create array of expected keys and actual keys for validation
+    const expectedKeys = ["id", "title", "author"];
+    const actualKeys = Object.keys(newBook);
+
+    // Validate keys
+    if(!actualKeys.every(key => expectedKeys.includes(key)) || actualKeys.length !== expectedKeys.length){
+      // Log an error
+      console.error("Bad Request: Missing keys or extra keys", actualKeys);
+      // Pass new error object to next middleware
+      return next(createError(400, "Bad Request"));
+    }
+
+    // Insert the new book
+    const result = await books.insertOne(newBook);
+    res.status(201).send({id: result.ops[0].id});
+  } catch (err) {
+    // Log the error
+    console.error("Error: ", err.message);
+    // Pass the error to the next middleware
+    next(err);
+  }
+});
+
+// Delete a book
+app.delete("/api/books/:id", async (req, res, next) => {
+  try {
+    // Get the id from the parameters
+    const { id } = req.params;
+
+    // Delete the book for the given id
+    const result = await books.deleteOne({ id: parseInt(id) });
+    res.status(204).send();
+  } catch (err) {
+    // Check for no matching book found
+    if(err.message === "No matching item found") {
+      return next(createError(404, "Book not found"));
+    }
+
+    // Log error
+    console.error("Error: ", err.message);
+    // Pass the error to the next middleware
     next(err);
   }
 });
