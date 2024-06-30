@@ -33,3 +33,36 @@ describe("Chapter 3: API Tests", () => {
     expect(res.body.message).toEqual("Input must be a number");
   });
 });
+
+// Create a test suite for Chapter 4
+describe("Chapter 4: API Tests", () => {
+  // Test to return 201 when inserting new recipe
+  it("should return a 201 status code when adding a new recipe", async () => {
+    // Call API to insert new recipe
+    const res = await request(app).post("/api/recipes").send({
+      id: 99,
+      name: "Grilled Cheese",
+      ingredients: ["bread", "cheese", "butter"]
+    });
+
+    expect(res.statusCode).toEqual(201);
+  });
+
+  // Test to return 400 Bad Request when attempting to add invalid data
+  it("should return a 400 status code when adding a new recipe with missing name", async () => {
+    const res = await request(app).post("/api/recipes").send({
+      id: 100,
+      ingredients: ["bread", "cheese", "butter"]
+    });
+
+    expect(res.statusCode).toEqual(400);
+    expect(res.body.message).toEqual("Bad Request");
+  });
+
+  // Test to return 204 when deleting a recipe
+  it("should return a 204 status code when deleting a recipe", async () => {
+    const res = await request(app).delete("/api/recipes/99");
+
+    expect(res.statusCode).toEqual(204);
+  });
+});
