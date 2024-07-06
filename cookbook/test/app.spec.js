@@ -66,3 +66,37 @@ describe("Chapter 4: API Tests", () => {
     expect(res.statusCode).toEqual(204);
   });
 });
+
+// Create a test suite for Chapter 5
+describe("Chapter 5: API Tests", () => {
+  // Test to return 204 status code when recipe successfully updated
+  it("should return a 204 status code when updating a recipe", async () => {
+    const res = await request(app).put("/api/recipes/1").send({
+      name: "Pancakes",
+      ingredients: ["flour", "milk", "eggs", "sugar"]
+    });
+
+    expect(res.statusCode).toEqual(204);
+  });
+
+  // Test to return a 400 error when the ID is not a number
+  it("should return a 400 status code when updating a recipe with a non-numeric id", async () => {
+    const res = await request(app).put("/api/recipes/foo").send({
+      name: "Test Recipe",
+      ingredients: ["test", "test"]
+    });
+
+    expect(res.statusCode).toEqual(400);
+    expect(res.body.message).toEqual("Input must be a number");
+  });
+
+  // Test to return a 400 status code if missing or too many keys provided
+  it("should return a 400 status code when updating a recipe with missing keys or extra keys", async () => {
+    const res = await request(app).put("/api/recipes/1").send({
+      name: "Test Recipe"
+    });
+
+    expect(res.statusCode).toEqual(400);
+    expect(res.body.message).toEqual("Bad Request");
+  });
+});
