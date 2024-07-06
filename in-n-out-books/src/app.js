@@ -159,6 +159,45 @@ app.delete("/api/books/:id", async (req, res, next) => {
   }
 });
 
+// Update a book using PUT
+app.put("/api/books/:id", async (req, res, next) => {
+  try {
+    // Create variables to hold the id and the book updates
+    let { id } = req.params;
+    let bookUpdates = req.body;
+
+    // Convert the supplied id to an int using parseInt
+    id = parseInt(id);
+
+    // Check that the id is a number
+    if(isNaN(id)) {
+      // Return a 400 error, id should be a number
+      return next(createError(400, "Input must be a number"));
+    }
+
+    // Create variables for expected and actual keys for validation
+    const expectedKeys = ["title", "author"];
+    const actualKeys = Object.keys(bookUpdates);
+
+    if(!actualKeys.every(key => expectedKeys.includes(key)) || expectedKeys.length !== actualKeys.length) {
+      // Pass a new 400 error to the next middleware
+      next(createError(400, "Bad Request"));
+    }
+
+    // Update the book
+    const result = await books.updateOne({ id: id }, bookUpdates);
+    res.status(204).send();
+  } catch (err) {
+    if(err.message === "No matching item found") {
+      // Pass a new 404 error to the next middleware
+      return next(createError(404, "Book not found"));
+    }
+
+    // Pass error to the next middleware
+    next(err);
+  }
+});
+
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));

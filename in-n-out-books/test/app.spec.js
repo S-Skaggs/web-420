@@ -78,3 +78,49 @@ describe("Chapter 4: API Tests", () => {
     expect(res.statusCode).toEqual(204);
   });
 });
+
+// Test suite for Chapter 5: API Tests
+describe("Chapter 5: API Tests", () => {
+  // Test to return a 204 status code when a book is successfully updated
+  it("should return a 204 status code when updating a book", async () => {
+    const res = await request(app).put("/api/books/1").send({
+      title: "The Fellowship of the Ring",
+      author: "J.R.R. Tolkien"
+    });
+
+    expect(res.statusCode).toEqual(204);
+  });
+
+  // Test to return a 400 status code when id is not numeric
+  it("should return a 400 status code when updating a book with a non-numeric id", async () => {
+    const res = await request(app).put("/api/books/Test").send({
+      name: "Test Book of Tests",
+      author: "Test Author"
+    });
+
+    expect(res.statusCode).toEqual(400);
+    expect(res.body.message).toEqual("Input must be a number");
+  });
+
+  // Test to return a 400 status code when missing keys
+  it("should return a 400 status code when updating a book with missing keys", async () => {
+    const res = await request(app).put("/api/books/1").send({
+      name: "The Fellowship of the Ring"
+    });
+
+    expect(res.statusCode).toEqual(400);
+    expect(res.body.message).toEqual("Bad Request");
+  });
+
+  // Test to return a 400 status code when too many keys
+  it("should return a 400 status code when updating a book with too many keys", async () => {
+    const res = await request(app).put("/api/books/1").send({
+      name: "The Fellowship of the Ring",
+      author: "J.R.R. Tolkien",
+      foo: "BAR"
+    });
+
+    expect(res.statusCode).toEqual(400);
+    expect(res.body.message).toEqual("Bad Request");
+  });
+});
