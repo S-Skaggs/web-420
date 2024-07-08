@@ -24,23 +24,78 @@ app.use(express.urlencoded({ extended: true }));
 app.get('/', async (req, res, next) => {
   // HTML content for the landing page
   const html = `
-  <html>
+  <!DOCTYPE html>
+<html lang="en">
   <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>In-N-Out-Books</title>
     <style>
-      body, h1, h2, h3 { margin: 0; padding: 0; border: 0; }
+      body,
+      h1,
+      h2,
+      h3 {
+        margin: 0;
+        padding: 0;
+        border: 0;
+      }
       body {
-        background: #FAF0E6;
+        background: #faf0e6;
         color: #000;
         margin: 1.25rem;
         font-size: 1.25rem;
       }
-      h1, h2, h3 { color: #008000; font-family: 'Papyrus', fantasy; }
-      h1, h2 { text-align: center; }
-      h3 { color: #000; }
-      .container { width: 50%; margin: 0 auto; font-family: 'Georgia', serif; }
-      .book { border: 1px solid #008000; padding: 1rem; margin: 1rem 0; }
-      .book h3 { margin-top: 0; }
+      header {
+        text-align: center;
+      }
+      nav {
+        text-align: center;
+        font-family: Verdana, Geneva, Tahoma, sans-serif;
+        font-size: .8em;
+      }
+      nav ul {
+        list-style-type: none;
+        display: inline-block;
+      }
+      nav li {
+        display: inline-block;
+        padding-right: 4px;
+        border-right: 1px solid #008000;
+      }
+      nav li:last-child {
+        border-right: none;
+        padding-right: 0;
+      }
+      nav a {
+        text-decoration: none;
+        color: blue;
+      }
+      nav a:hover {
+        text-decoration: underline;
+        color: #008000;
+      }
+      h1,
+      h2,
+      h3 {
+        color: #008000;
+        font-family: "Papyrus", fantasy;
+      }
+      h3 {
+        color: #000;
+      }
+      .container {
+        width: 50%;
+        margin: 0 auto;
+        font-family: "Georgia", serif;
+      }
+      .book {
+        border: 1px solid #008000;
+        padding: 1rem;
+        margin: 1rem 0;
+      }
+      .book h3 {
+        margin-top: 0;
+      }
     </style>
   </head>
   <body>
@@ -49,19 +104,151 @@ app.get('/', async (req, res, next) => {
         <h1>In-N-Out-Books</h1>
         <h2>Your Next Adventure is Just a Page Away</h2>
       </header>
+      <nav>
+        <ul>
+            <li><a href="http://localhost:3000">Home</a></li>
+            <li><a href="http://localhost:3000/about">About</a></li>
+        </ul>
+      </nav>
 
       <br />
 
       <main>
-        <p>The idea of the "In-N-Out-Books" was inspired by the love of books and the desire to create a platform where users can manage their own collection of books.</p>
-        <p>Whether you are an avid reader who wants to keep track of the books you've read, or a book club organizer who needs to manage a shared collection, "In-N-Out-Books" is designed to cater to your needs.</p>
+        <h1>Current Books</h1>
+        <div class="book">
+          <h3>The Fellowship of the Ring</h3>
+          <p>By J.R.R. Tolkien</p>
+        </div>
+        <div class="book">
+          <h3>The Two Towers</h3>
+          <p>By J.R.R. Tolkien</p>
+        </div>
+        <div class="book">
+          <h3>The Return of the King</h3>
+          <p>By J.R.R. Tolkien</p>
+        </div>
       </main>
     </div>
   </body>
-  </html>
+</html>
   `; //End content for the landing page
 
   res.send(html); // Sends the HTML content to the client
+});
+
+app.get('/about', async (req, res, next) => {
+  // HTML content for the About page
+  const html = `
+  <!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>In-N-Out-Books</title>
+    <style>
+      body,
+      h1,
+      h2,
+      h3 {
+        margin: 0;
+        padding: 0;
+        border: 0;
+      }
+      body {
+        background: #faf0e6;
+        color: #000;
+        margin: 1.25rem;
+        font-size: 1.25rem;
+      }
+      header {
+        text-align: center;
+      }
+      nav {
+        text-align: center;
+        font-family: Verdana, Geneva, Tahoma, sans-serif;
+        font-size: .8em;
+      }
+      nav ul {
+        list-style-type: none;
+        display: inline-block;
+      }
+      nav li {
+        display: inline-block;
+        padding-right: 4px;
+        border-right: 1px solid #008000;
+      }
+      nav li:last-child {
+        border-right: none;
+        padding-right: 0;
+      }
+      nav a {
+        text-decoration: none;
+        color: blue;
+      }
+      nav a:hover {
+        text-decoration: underline;
+        color: #008000;
+      }
+      h1,
+      h2,
+      h3 {
+        color: #008000;
+        font-family: "Papyrus", fantasy;
+      }
+      h3 {
+        color: #000;
+      }
+      .container {
+        width: 50%;
+        margin: 0 auto;
+        font-family: "Georgia", serif;
+      }
+      .book {
+        border: 1px solid #008000;
+        padding: 1rem;
+        margin: 1rem 0;
+      }
+      .book h3 {
+        margin-top: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <h1>In-N-Out-Books</h1>
+        <h2>Your Next Adventure is Just a Page Away</h2>
+      </header>
+      <nav>
+        <ul>
+            <li><a href="http://localhost:3000">Home</a></li>
+            <li><a href="http://localhost:3000/about">About</a></li>
+        </ul>
+      </nav>
+
+      <br />
+
+      <main>
+        <h1>About Us</h1>
+        <p>
+          The idea of the "In-N-Out-Books" was inspired by the love of books and
+          the desire to create a platform where users can manage their own
+          collection of books.
+        </p>
+        <p>
+          Whether you are an avid reader who wants to keep track of the books
+          you've read, or a book club organizer who needs to manage a shared
+          collection, "In-N-Out-Books" is designed to cater to your needs.
+        </p>
+      </main>
+    </div>
+  </body>
+</html>
+  `;
+  // End content for the About page
+
+  // Send the HTML to the client
+  res.send(html);
 });
 
 // Route to get a list of all books
