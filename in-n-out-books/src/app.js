@@ -13,6 +13,7 @@ const createError = require("http-errors");
 // Create an Express application in a variable
 const app = express(); // Creates an Express application
 const books = require("../database/books"); // require books mock database
+const users = require("../database/users"); // Require users from the data folder
 
 // Tell Express to parse incoming requests as JSON payloads
 app.use(express.json());
@@ -381,6 +382,53 @@ app.put("/api/books/:id", async (req, res, next) => {
     }
 
     // Pass error to the next middleware
+    next(err);
+  }
+});
+
+// Authenticate user login POST
+app.post("/api/login", async (req, res, next) => {
+  try {
+    // Get user object from body
+    const user = req.body;
+
+    // Variables to check keys
+    const expectedKeys = ["email", "password"];
+    const actualKeys = Object.keys(user);
+
+    // Check that we have proper keys
+    if(!actualKeys.every(key => expectedKeys.includes(key)) || actualKeys.length !== expectedKeys.length) {
+      // Log error
+      console.error("Bad Request");
+      // Send an error object to the next middleware
+      return next(createError(400, "Bad Request"));
+    }
+    // Create variable to hold valid user
+    let loggedInUser;
+
+    // Get user with the provided email
+    const existingUser = await users.findOne({email: user.email});
+
+    // Compare provided password with existing user's
+    if(bcrypt.compareSync(user.password, existingUser.password)) {
+      loggedInUser = existingUser;
+    } else {
+      loggedInUser = null;
+    }
+
+    // Check if we actually have a loggedInUser
+    if(!loggedInUser) {
+      // log error
+      console.error("Unauthorized");
+      // Send an error object to the next middleware
+      return next(createError(401, "Unauthorized"));
+    }
+
+    res.status(200).send({user: loggedInUser, message: "Authentication successful"});
+  } catch(err) {
+    // Log error
+    console.error("Error: ", err.message);
+    // Pass error to next middleware
     next(err);
   }
 });

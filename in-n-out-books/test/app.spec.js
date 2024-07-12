@@ -124,3 +124,50 @@ describe("Chapter 5: API Tests", () => {
     expect(res.body.message).toEqual("Bad Request");
   });
 });
+
+// Test suite for Chapter 6: API Tests
+describe("Chapter 6: API Tests", () => {
+  // Test to return a 200 status code when successfully authenticated
+  it("should return a status code of 200 and 'Authentication successful' message when user authenticates", async () => {
+    const res = await request(app).post("/api/login").send({
+      email: "ron@hogwarts.edu",
+      password: "weasley"
+    });
+
+    expect(res.statusCode).toEqual(200);
+    expect(res.body.message).toEqual("Authentication successful");
+  });
+
+  // Test to return a 401 status code when using incorrect credentials
+  it("should return a 401 status code and 'Unauthorized' message when incorrect credentials are provided", async () => {
+    const res = await request(app).post("/api/login").send({
+      email: "ron@hogwarts.edu",
+      password: "weasel"
+    });
+
+    expect(res.statusCode).toEqual(401);
+    expect(res.body.message).toEqual("Unauthorized");
+  });
+
+  // Test to return a 400 status code when missing keys
+  it("should return a 400 status code and 'Bad Request' message if missing email or password", async () => {
+    const res = await request(app).post("/api/login").send({
+      email: "ron@hogwarts.edu"
+    });
+
+    expect(res.statusCode).toEqual(400);
+    expect(res.body.message).toEqual("Bad Request");
+  });
+
+  // Test to return a 400 status code when too many keys
+  it("should return a 400 status code and 'Bad Request' message if too many keys provided", async () => {
+    const res = await request(app).post("/api/login").send({
+      email: "ron@hogwarts.edu",
+      password: "weasley",
+      extra: "A little something extra."
+    });
+
+    expect(res.statusCode).toEqual(400);
+    expect(res.body.message).toEqual("Bad Request");
+  });
+});
