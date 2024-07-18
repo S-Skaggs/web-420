@@ -14,6 +14,28 @@ const createError = require("http-errors");
 const app = express(); // Creates an Express application
 const books = require("../database/books"); // require books mock database
 const users = require("../database/users"); // Require users from the data folder
+const Ajv = require("ajv"); // Require ajv (Another JavaScript Validator) for schema validation
+const ajv = new Ajv(); // New up an instance of ajv
+
+// Create a JSON Schema object for the security questions
+const securityQuestionsSchema = {
+  type: "object",
+  properties: {
+    securityQuestions: {
+      type: "array",
+      items: {
+        type: "object",
+        properties: {
+          answer: { type: "string" },
+        },
+        required: ["answer"],
+        additionalProperties: false,
+      },
+    },
+  },
+  required: ["securityQuestions"],
+  additionalProperties: false
+};
 
 // Tell Express to parse incoming requests as JSON payloads
 app.use(express.json());
@@ -429,6 +451,49 @@ app.post("/api/login", async (req, res, next) => {
     // Log error
     console.error("Error: ", err.message);
     // Pass error to next middleware
+    next(err);
+  }
+});
+
+// Verify user security questions POST
+app.post("/api/users/:email/verify-security-questions", async (req, res, next) => {
+  try{
+    // Create variables to hold data sent, parameters or body
+    const { email } = req.params;
+    const { securityQuestions } = req.body;
+
+    // Compile securityQuestions schema to use in validation
+    const validate = ajv.compile(securityQuestionsSchema);
+    // Validate the request body against the schema and store that in a variable
+    const valid = validate(req.body);
+
+    // Check that the body validated with the schema
+    if(!valid) {
+      // Log error
+      console.error("Bad Request: Invalid request body", validate.errors);
+      return next(createError(400, "Bad Request"));
+    }
+
+    // Get the user document that is related to the email
+    const user = await users.findOne({email: email});
+
+    // Check security questions
+    if(securityQuestions[0].answer !== user.securityQuestions[0].answer ||
+      securityQuestions[1].answer !== user.securityQuestions[1].answer ||
+      securityQuestions[2].answer !== user.securityQuestions[2].answer
+    ){
+      // Log unauthorized attempt
+      console.error("Unauthorized: Security questions do not match");
+      // Return unauthorized status and message
+      return next(createError(401, "Unauthorized"));
+    }
+
+    // Send success status and message
+    res.status(200).send({message: "Security questions successfully answered"});
+  } catch(err) {
+    // Log Error
+    console.error("Error: ", err.message);
+    // Pass error to the next middleware
     next(err);
   }
 });
