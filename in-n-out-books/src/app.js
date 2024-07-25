@@ -129,8 +129,8 @@ app.get('/', async (req, res, next) => {
       </header>
       <nav>
         <ul>
-            <li><a href="http://localhost:3000">Home</a></li>
-            <li><a href="http://localhost:3000/about">About</a></li>
+            <li><a href="/">Home</a></li>
+            <li><a href="/about">About</a></li>
         </ul>
       </nav>
 
@@ -244,8 +244,8 @@ app.get('/about', async (req, res, next) => {
       </header>
       <nav>
         <ul>
-            <li><a href="http://localhost:3000">Home</a></li>
-            <li><a href="http://localhost:3000/about">About</a></li>
+            <li><a href="/">Home</a></li>
+            <li><a href="/about">About</a></li>
         </ul>
       </nav>
 
